@@ -32,19 +32,32 @@ module.exports = {
         });
     },
 
-    inserir: (modelo,placa) => {
+inserir: (modelo, placa)=> {
+    return new Promise((aceito, rejeitado)=> {
+
+        db.query('INSERT INTO carros (modelo, placa) VALUES (?, ?)'),
+            [modelo, placa],
+            (error, results)=>{
+                if(error){ rejeitado(error); return; }
+                aceito(results.insertCodigo); //insertId
+            }
+        }
+    )}
+}
+    
+    alterar: (codigo,modelo,placa) => {
         return new Promise((aceito, rejeitado)=>{
 
-            db.query('INSERT INTO carros (modelo, placa) VALUES (?,?)',
-            [modelo, placa], 
+            db.query('UPDATE carros SET modelo = ?, placa = ? WHERE codigo = ?',
+            [modelo, placa,codigo], 
             (error,results)=>{
                 if(error) { rejeitado(error); return;}
-                aceito(results.insertCodigo);
+                aceito(results);
 
             });
         });
-    },
-    deletar: (codigo) => {
+    }
+    /*deletar: (codigo) => {
         return new Promise((aceito,rejeitado) => {
            db.query('SELECT * FROM Carros WHERE codigo = ?',[codigo],(error,results) => {
             if(error) {
@@ -59,6 +72,4 @@ module.exports = {
             }
          });
         });
-    }
-    
-};
+    }*/
